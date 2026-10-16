@@ -1,40 +1,42 @@
-# Sudoku AI — Predicate Calculus + Z3
+# AI Sudoku Game — Predicate Calculus + Z3
 
-A beginner-friendly Sudoku solver that models Sudoku with the predicate `Val(r,c,d)` and solves the resulting constraints using Z3. The interactive version is designed to run directly in Google Colab with `ipywidgets`—no local host or separate web server is required.
+A playable 9×9 Sudoku game for Google Colab. It uses the Boolean predicate `Val(r,c,d)` and the Z3 constraint solver.
 
-## Logic model
-
-- `Val(r,c,d)`: cell `(r,c)` contains digit `d`.
-- Each cell has exactly one digit from 1 to 9.
-- Each digit occurs exactly once in every row, column, and 3×3 box.
-- The original clues are asserted as facts.
-- Z3 searches for a satisfying assignment.
-
-The solver uses universally quantified Z3 formulas for the cell, row, and column constraints, and explicit constraints for each 3×3 box. It is accurate to describe this as a **predicate-calculus-style, quantified constraint model implemented with Z3/SMT**, rather than a standalone first-order logic theorem prover.
+## Features
+- Interactive board and on-screen number pad
+- New Game, Check, Hint, Solve with AI, and Clear entries
+- Original clues are locked
+- Highlights conflicts and incorrect filled entries
+- Two built-in puzzles
+- Logical explanation and solution verification test
 
 ## Run in Google Colab
+1. Download `AI_Sudoku_Predicate_Calculus.ipynb`.
+2. Open https://colab.research.google.com/.
+3. Choose **File → Upload notebook**.
+4. Upload the notebook and run all cells from top to bottom.
+5. Play using the board shown in the notebook output.
 
-1. Open [Google Colab](https://colab.research.google.com/).
-2. Create a new notebook.
-3. Install dependencies:
+The first cell installs `z3-solver`; internet access is required for this step.
 
-   ```python
-   !pip -q install z3-solver ipywidgets
-   ```
-4. Copy the solver and UI cells from the notebook or source files into the notebook.
-5. Run cells from top to bottom. The UI appears in the notebook output.
+## Predicate and constraints
+`Val(r,c,d)` is true if row `r`, column `c` contains digit `d`.
 
-No localhost, Streamlit, or separate website is needed.
+The model enforces:
+1. Every cell contains at least one digit.
+2. Every cell contains at most one digit.
+3. A digit cannot repeat in a row.
+4. A digit cannot repeat in a column.
+5. A digit cannot repeat in a 3×3 box.
+6. Original puzzle clues remain fixed.
 
-## Repository contents
+The first two rules together mean each cell contains exactly one digit. Z3 checks satisfiability and returns a model that the game displays as a solved grid.
 
-- `src/sudoku_solver.py` — Z3 `Val(r,c,d)` solver and solution validation.
-- `src/puzzle.py` — example Sudoku puzzle.
-- `presentation/sudoku_ai_presentation.tex` — Beamer slides inspired by the provided logic-agent presentation structure.
-- `presentation/video_script.md` — short demo narration.
-- `presentation/linkedin_post.md` — editable LinkedIn draft.
-- `requirements.txt` — Python dependencies.
+## Technology
+Python, Google Colab, Z3 Solver, IPython display, HTML/CSS and JavaScript.
 
-## Notes
+## Limitations
+The interactive callbacks are designed for Google Colab, not a regular Python terminal. The current game uses two predefined puzzles and does not yet generate puzzles or prove uniqueness.
 
-The repository contains the core solver. The interactive Colab widget interface can be included in a `.ipynb` notebook as a next step. The quantified solver may take longer than a simple integer-variable model on some environments because quantified SMT solving is more complex.
+## Academic note
+Z3 is an SMT solver. This implementation uses its Boolean-constraint interface to represent the finite propositions `Val(r,c,d)`.
